@@ -34,7 +34,7 @@ public class RoleSpecification {
                 predicates.add(builder.equal(root.get("status"), Status.valueOf(status)));
             }
             if (predicates.isEmpty()) {
-                return builder.conjunction();  // This will return all records
+                return builder.conjunction();
             }
 
             // Combine predicates with OR conjunction
