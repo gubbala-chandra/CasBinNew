@@ -55,7 +55,7 @@ public class RoleServiceImpl implements RoleService {
     private Role updateRole(RoleDto roleDto) {
         Role newRole = null;
         Optional<Role> roleExists = roleRepository.findByRoleName(roleDto.getRoleName());
-        if(roleExists.isPresent()) {
+        if(roleExists.isPresent() && roleExists.get().getRoleId() != roleDto.getRoleId()) {
             throw new RoleAlreadyExistsException(
                     formatSafe("RoleName already present with roleId: %s, " +
                             "trying to add same roleName to roleId: %s",

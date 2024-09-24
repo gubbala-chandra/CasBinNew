@@ -16,24 +16,32 @@ import static com.example.user.util.Utils.formatSafe;
 public class CustomExceptionHandler {
 
     @ExceptionHandler(RoleAlreadyExistsException.class)
-    public ResponseEntity<ErrorResponse> roleAlreadyExists(HttpServletRequest request, RoleAlreadyExistsException ex, HandlerMethod method) {
+    public ResponseEntity<ErrorResponse> handleRoleAlreadyExistsException(HttpServletRequest request, RoleAlreadyExistsException ex, HandlerMethod method) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(generateErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage(),method, request));
     }
 
     @ExceptionHandler(RoleNotPresetException.class)
-    public ResponseEntity<ErrorResponse> roleNotPresent(HttpServletRequest request,RoleNotPresetException ex, HandlerMethod method) {
-        ErrorResponse response = ErrorResponse.builder()
-                .errorCode(HttpStatus.FORBIDDEN.value())
-                .errorMessage(ex.getMessage())
-                .errorTime(LocalDateTime.now())
-                .build();
+    public ResponseEntity<ErrorResponse> handleRoleNotPresentException(HttpServletRequest request,RoleNotPresetException ex, HandlerMethod method) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(generateErrorResponse(HttpStatus.FORBIDDEN.value(), ex.getMessage(),method, request));
     }
 
+    @ExceptionHandler(GroupAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleGroupAlreadyExistsException(HttpServletRequest request, GroupAlreadyExistsException ex, HandlerMethod method) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(generateErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage(),method, request));
+    }
+
+    @ExceptionHandler(GroupNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleGroupNotFoundException(HttpServletRequest request, GroupNotFoundException ex, HandlerMethod method) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(generateErrorResponse(HttpStatus.CONFLICT.value(), ex.getMessage(),method, request));
+    }
 
     private ErrorResponse generateErrorResponse(Integer status, String message, HandlerMethod method, HttpServletRequest request) {
        return ErrorResponse.builder()

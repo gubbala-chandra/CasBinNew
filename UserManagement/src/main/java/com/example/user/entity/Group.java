@@ -2,29 +2,27 @@ package com.example.user.entity;
 
 import com.example.user.enums.Status;
 import lombok.*;
-import lombok.experimental.Accessors;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Accessors(chain = true)
-@Table(name = "roles", schema = "eis_auth")
-public class Role {
-
+@Table(name = "groups", schema = "eis_auth")
+public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long roleId;
+    private Long groupId;
 
-    @Column(name = "role_name", nullable = false, length = 255)
-    private String roleName;
+    @Column(name = "group_name", nullable = false, length = 255)
+    private String groupName;
 
     @Column(name = "description", nullable = true, length = 1000)
     private String description;
@@ -46,4 +44,12 @@ public class Role {
     @UpdateTimestamp
     @Column(name = "updated_time", nullable = false)
     private Timestamp updatedTime;
+
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<GroupRole> groupRoles = new ArrayList<>();
+
+    public void addGroupRole(GroupRole groupRole) {
+        this.groupRoles.add(groupRole);
+        groupRole.setGroup(this);
+    }
 }
