@@ -14,6 +14,6 @@ import java.util.List;
 public interface GroupRoleRepository extends JpaRepository<GroupRole, Long> {
 
 
-    @Query(value = "SELECT r.role_id , r.role_name FROM eis_auth.group_roles gr JOIN eis_auth.role r on r.role_id = gr.role_id  WHERE gr.group_id = :groupId", nativeQuery = true)
+    @Query(value = "SELECT r.role_id , r.role_name FROM eis_auth.group_roles gr JOIN eis_auth.roles r on r.role_id = gr.role_id  WHERE gr.group_id = :groupId", nativeQuery = true)
     List<Object[]> findRoleNamesByGroupId(@Param("groupId") Long groupId);
 }

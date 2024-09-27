@@ -43,6 +43,20 @@ public class CustomExceptionHandler {
                 .body(generateErrorResponse(HttpStatus.CONFLICT.value(), ex.getMessage(),method, request));
     }
 
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleUserAlreadyExistsException(HttpServletRequest request, UserAlreadyExistsException ex, HandlerMethod method) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(generateErrorResponse(HttpStatus.CONFLICT.value(), ex.getMessage(),method, request));
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotFoundException(HttpServletRequest request, UserNotFoundException ex, HandlerMethod method) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(generateErrorResponse(HttpStatus.CONFLICT.value(), ex.getMessage(),method, request));
+    }
+
     private ErrorResponse generateErrorResponse(Integer status, String message, HandlerMethod method, HttpServletRequest request) {
        return ErrorResponse.builder()
                .method(formatSafe("%s/%s", request.getMethod(),method.getMethod().getName()))

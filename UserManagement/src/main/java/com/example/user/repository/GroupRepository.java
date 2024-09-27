@@ -2,6 +2,7 @@ package com.example.user.repository;
 
 import com.example.user.dto.GroupResponseDto;
 import com.example.user.entity.Group;
+import com.example.user.enums.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -16,4 +17,7 @@ public interface GroupRepository extends JpaRepository<Group, Long>, JpaSpecific
 
     @Transactional(readOnly = true)
     Optional<Group> findByGroupName(String groupName);
+
+    @Transactional(readOnly = true)
+    public List<Group> findByStatus(Status status);
 }

@@ -12,17 +12,16 @@ import javax.persistence.*;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "user_group", schema = "eis_auth")
-public class UserGroup {
-
+@Table(name = "user_role", schema = "eis_auth")
+public class UserRole {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userGroupId;
+    private Long userRoleId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "group_id", nullable = false)
-    private Long groupId;
+    @Column(name = "role_id", nullable = false)
+    private Long roleId;
 }

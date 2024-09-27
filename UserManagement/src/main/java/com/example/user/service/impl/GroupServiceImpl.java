@@ -13,6 +13,8 @@ import com.example.user.repository.GroupRepository;
 import com.example.user.repository.GroupRoleRepository;
 import com.example.user.service.GroupService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,8 +31,9 @@ import static com.example.user.util.Utils.isEmpty;
 import static com.example.user.specification.GroupSpecification.getGroupSpecification;
 
 @Service
-@Slf4j
 public class GroupServiceImpl implements GroupService {
+
+    Logger log = LogManager.getLogger(GroupServiceImpl.class);
 
     @Autowired
     private GroupRepository groupRepository;

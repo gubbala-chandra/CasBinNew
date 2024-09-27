@@ -9,6 +9,8 @@ import com.example.user.exception.RoleNotPresetException;
 import com.example.user.repository.RoleRepository;
 import com.example.user.service.RoleService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,8 +24,9 @@ import static com.example.user.util.Utils.isEmpty;
 import static com.example.user.specification.RoleSpecification.getRoleSpecification;
 
 @Service
-@Slf4j
 public class RoleServiceImpl implements RoleService {
+
+    Logger log = LogManager.getLogger(RoleServiceImpl.class);
 
     @Autowired
     private RoleRepository roleRepository;
