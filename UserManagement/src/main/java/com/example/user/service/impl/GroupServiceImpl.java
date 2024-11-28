@@ -4,7 +4,7 @@ import com.example.user.dto.GroupRequestDto;
 import com.example.user.dto.GroupResponseDto;
 import com.example.user.dto.PaginationResponseDto;
 import com.example.user.dto.RoleIdNameDto;
-import com.example.user.entity.Group;
+import com.example.user.entity.Groups;
 import com.example.user.entity.GroupRole;
 import com.example.user.enums.Status;
 import com.example.user.exception.GroupAlreadyExistsException;
@@ -12,7 +12,6 @@ import com.example.user.exception.GroupNotFoundException;
 import com.example.user.repository.GroupRepository;
 import com.example.user.repository.GroupRoleRepository;
 import com.example.user.service.GroupService;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,11 +50,11 @@ public class GroupServiceImpl implements GroupService {
     }
 
     private ResponseEntity<GroupResponseDto> createGroup(GroupRequestDto groupRequestDto) {
-        Optional<Group> groupExists = groupRepository.findByGroupName(groupRequestDto.getGroupName());
+        Optional<Groups> groupExists = groupRepository.findByGroupName(groupRequestDto.getGroupName());
         if(groupExists.isPresent()) {
             throw new GroupAlreadyExistsException(formatSafe("Group already exists with given groupName: %s", groupRequestDto.getGroupName()));
         }
-        Group group = new Group();
+        Groups group = new Groups();
         group.setGroupName(groupRequestDto.getGroupName());
         group.setDescription(groupRequestDto.getDescription());
         group.setStatus(Status.valueOf(groupRequestDto.getStatus()));
@@ -82,11 +81,11 @@ public class GroupServiceImpl implements GroupService {
     }
 
     private ResponseEntity<GroupResponseDto> updateGroup(GroupRequestDto groupRequestDto) {
-        Optional<Group> groupExists = groupRepository.findByGroupName(groupRequestDto.getGroupName());
+        Optional<Groups> groupExists = groupRepository.findByGroupName(groupRequestDto.getGroupName());
         if(groupExists.isPresent() && groupExists.get().getGroupId() != groupRequestDto.getGroupId()) {
             throw new GroupAlreadyExistsException(formatSafe("Group already exists with given groupName: %s", groupRequestDto.getGroupName()));
         }
-        Group group = groupRepository.findById(groupRequestDto.getGroupId())
+        Groups group = groupRepository.findById(groupRequestDto.getGroupId())
                 .orElseThrow(() -> new GroupNotFoundException(formatSafe("Group does not exist for group Id: %s", groupRequestDto.getGroupId())));
 
         group.getGroupRoles().clear();
@@ -114,7 +113,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public ResponseEntity<PaginationResponseDto<GroupResponseDto>> getGroupWithRoles(Long groupId, String groupName, String description, String status, Pageable pageable) {
-        Page<Group> groupPage = groupRepository.findAll(getGroupSpecification(groupId, groupName, description, status), pageable);
+        Page<Groups> groupPage = groupRepository.findAll(getGroupSpecification(groupId, groupName, description, status), pageable);
         List<GroupResponseDto> groupResponseList = groupPage.getContent().stream()
                 .map(group -> {
                     List<RoleIdNameDto> roles = Optional.of(groupRoleRepository.findRoleNamesByGroupId(group.getGroupId()))
@@ -144,7 +143,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public ResponseEntity<GroupResponseDto> getGroupById(Long groupId) {
-        Group group = groupRepository.findById(groupId)
+        Groups group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new GroupNotFoundException(formatSafe("Group does not exist for group Id: %s", groupId)));
         List<RoleIdNameDto> roles = Optional.of(groupRoleRepository.findRoleNamesByGroupId(group.getGroupId()))
                 .orElseThrow(() -> new GroupNotFoundException("Group not found with the specified criteria"))

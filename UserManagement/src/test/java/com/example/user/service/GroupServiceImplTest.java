@@ -3,7 +3,7 @@ package com.example.user.service;
 import com.example.user.dto.GroupRequestDto;
 import com.example.user.dto.GroupResponseDto;
 import com.example.user.dto.PaginationResponseDto;
-import com.example.user.entity.Group;
+import com.example.user.entity.Groups;
 import com.example.user.entity.GroupRole;
 import com.example.user.enums.Status;
 import com.example.user.exception.GroupAlreadyExistsException;
@@ -43,7 +43,7 @@ public class GroupServiceImplTest {
     private GroupServiceImpl groupServiceImpl;
 
     private GroupRequestDto groupRequestDto;
-    private Group group;
+    private Groups group;
     private GroupRole groupRole;
 
     @BeforeEach
@@ -57,7 +57,7 @@ public class GroupServiceImplTest {
         groupRequestDto.setRoleIds(Arrays.asList(1L, 2L));
         groupRequestDto.setUpdatedBy("Admin");
 
-        group = new Group();
+        group = new Groups();
         group.setGroupId(1L);
         group.setGroupName("Test Group");
         group.setDescription("Test Description");
@@ -72,15 +72,15 @@ public class GroupServiceImplTest {
     @Test
     public void testCreateGroup_Success() {
         when(groupRepository.findByGroupName(anyString())).thenReturn(Optional.empty());
-        when(groupRoleRepository.findRoleNamesByGroupId(anyLong())).thenReturn((List<Object[]>)Arrays.asList(new Object[]{1L, "Admin"}));
-        when(groupRepository.save(any(Group.class))).thenReturn(group);
+        when(groupRoleRepository.findRoleNamesByGroupId(anyLong())).thenReturn(Collections.singletonList(new Object[]{1L, "Admin"}));
+        when(groupRepository.save(any(Groups.class))).thenReturn(group);
 
         ResponseEntity<GroupResponseDto> response = groupServiceImpl.saveOrUpdateGroup(groupRequestDto);
 
         assertNotNull(response);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals("Test Group", response.getBody().getGroupName());
-        verify(groupRepository, times(1)).save(any(Group.class));
+        verify(groupRepository, times(1)).save(any(Groups.class));
     }
 
     @Test
@@ -91,7 +91,7 @@ public class GroupServiceImplTest {
             groupServiceImpl.saveOrUpdateGroup(groupRequestDto);
         });
 
-        verify(groupRepository, never()).save(any(Group.class));
+        verify(groupRepository, never()).save(any(Groups.class));
     }
 
     @Test
@@ -99,13 +99,13 @@ public class GroupServiceImplTest {
         groupRequestDto.setGroupId(1L);
         when(groupRepository.findByGroupName(anyString())).thenReturn(Optional.of(group));
         when(groupRepository.findById(anyLong())).thenReturn(Optional.of(group));
-        when(groupRoleRepository.findRoleNamesByGroupId(anyLong())).thenReturn((List<Object[]>)Arrays.asList(new Object[]{1L, "Admin"}));
+        when(groupRoleRepository.findRoleNamesByGroupId(anyLong())).thenReturn(Collections.singletonList(new Object[]{1L, "Admin"}));
 
         ResponseEntity<GroupResponseDto> response = groupServiceImpl.saveOrUpdateGroup(groupRequestDto);
 
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        verify(groupRepository, times(1)).save(any(Group.class));
+        verify(groupRepository, times(1)).save(any(Groups.class));
     }
 
     @Test
@@ -116,13 +116,13 @@ public class GroupServiceImplTest {
             groupServiceImpl.saveOrUpdateGroup(groupRequestDto);
         });
 
-        verify(groupRepository, never()).save(any(Group.class));
+        verify(groupRepository, never()).save(any(Groups.class));
     }
 
     @Test
     public void testGetGroupById_Success() {
         when(groupRepository.findById(anyLong())).thenReturn(Optional.of(group));
-        when(groupRoleRepository.findRoleNamesByGroupId(anyLong())).thenReturn((List<Object[]>)Arrays.asList(new Object[]{1L, "Admin"}));
+        when(groupRoleRepository.findRoleNamesByGroupId(anyLong())).thenReturn(Collections.singletonList(new Object[]{1L, "Admin"}));
 
         ResponseEntity<GroupResponseDto> response = groupServiceImpl.getGroupById(1L);
 
@@ -142,9 +142,9 @@ public class GroupServiceImplTest {
 
     @Test
     public void testGetGroupWithRoles_Success() {
-        Page<Group> groupPage = new PageImpl<>(Collections.singletonList(group));
+        Page<Groups> groupPage = new PageImpl<>(Collections.singletonList(group));
         when(groupRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(groupPage);
-        when(groupRoleRepository.findRoleNamesByGroupId(anyLong())).thenReturn((List<Object[]>)Arrays.asList(new Object[]{1L, "Admin"}));
+        when(groupRoleRepository.findRoleNamesByGroupId(anyLong())).thenReturn(Collections.singletonList(new Object[]{1L, "Admin"}));
 
         ResponseEntity<PaginationResponseDto<GroupResponseDto>> response = groupServiceImpl.getGroupWithRoles(1L, "Test Group", "Test Description", "ACTIVE", Pageable.unpaged());
 

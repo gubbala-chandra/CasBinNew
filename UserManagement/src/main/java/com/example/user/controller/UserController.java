@@ -2,6 +2,8 @@ package com.example.user.controller;
 
 import com.example.user.dto.*;
 import com.example.user.entity.Role;
+import com.example.user.mail.MailerInterface;
+import com.example.user.mail.MailerService;
 import com.example.user.service.GroupService;
 import com.example.user.service.RoleService;
 import com.example.user.service.UserService;
@@ -11,7 +13,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/v1/api")
@@ -25,6 +30,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private MailerService mailerService;
 
     @RequestMapping(value = "/saveOrUpdateRole", method = {RequestMethod.POST, RequestMethod.PUT}, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Role> saveOrUpdateRole(@RequestBody RoleDto roleDto) {
@@ -91,6 +99,13 @@ public class UserController {
     @RequestMapping(value = "/user/getAllGroups", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<GroupNameDto>> getAllGroups() {
         return userService.getAllGroups();
+    }
+
+    @RequestMapping(value = "/user/sendeMail", method = RequestMethod.POST)
+    public void sendEmail(@RequestBody String value) {
+        String html = value;
+        Set<String> sampleEmail = new HashSet<>(Arrays.asList("sekhar.gubbala06@gmail.com"));
+        mailerService.sendMail(sampleEmail,html,"this is a sample send to test email");
     }
 
 }

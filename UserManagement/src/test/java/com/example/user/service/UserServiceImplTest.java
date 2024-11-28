@@ -1,7 +1,7 @@
 package com.example.user.service;
 
 import com.example.user.dto.*;
-import com.example.user.entity.Group;
+import com.example.user.entity.Groups;
 import com.example.user.entity.Role;
 import com.example.user.entity.User;
 import com.example.user.enums.Status;
@@ -56,8 +56,8 @@ public class UserServiceImplTest {
     private User user;
     private Role role1;
     private Role role2;
-    private Group group1;
-    private Group group2;
+    private Groups group1;
+    private Groups group2;
 
     @BeforeEach
     public void setUp() {
@@ -88,12 +88,12 @@ public class UserServiceImplTest {
         role2.setRoleName("User");
         role2.setStatus(Status.ACTIVE);
 
-        group1 = new Group();
+        group1 = new Groups();
         group1.setGroupId(1L);
         group1.setGroupName("Group 1");
         group1.setStatus(Status.ACTIVE);
 
-        group2 = new Group();
+        group2 = new Groups();
         group2.setGroupId(2L);
         group2.setGroupName("Group 2");
         group2.setStatus(Status.ACTIVE);
@@ -102,9 +102,9 @@ public class UserServiceImplTest {
     @Test
     public void testCreateUser_Success() {
         when(userRepository.findByUserName(anyString())).thenReturn(Optional.empty());
-        when(userRoleRepository.findRoleNameByUserId(anyLong())).thenReturn((List<Object[]>)Arrays.asList(new Object[]{1L, "Admin"}));
-        when(userGroupRepository.findGroupNameByUserId(anyLong())).thenReturn((List<Object[]>)Arrays.asList(new Object[]{1L, "Group 1"}));
-        when(groupRoleRepository.findRoleNamesByGroupId(anyLong())).thenReturn((List<Object[]>)Arrays.asList(new Object[]{1L, "Admin"}));
+        when(userRoleRepository.findRoleNameByUserId(anyLong())).thenReturn(Collections.singletonList(new Object[]{1L, "Admin"}));
+        when(userGroupRepository.findGroupNameByUserId(anyLong())).thenReturn(Collections.singletonList(new Object[]{1L, "Group 1"}));
+        when(groupRoleRepository.findRoleNamesByGroupId(anyLong())).thenReturn(Collections.singletonList(new Object[]{1L, "Admin"}));
         when(userRepository.save(any(User.class))).thenReturn(user);
 
         ResponseEntity<UserResponseDto> response = userServiceImpl.saveOrUpdateUser(userRequestDto);
@@ -129,9 +129,9 @@ public class UserServiceImplTest {
     @Test
     public void testUpdateUser_Success() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
-        when(userRoleRepository.findRoleNameByUserId(anyLong())).thenReturn((List<Object[]>)Arrays.asList(new Object[]{1L, "Admin"}));
-        when(userGroupRepository.findGroupNameByUserId(anyLong())).thenReturn((List<Object[]>)Arrays.asList(new Object[]{1L, "Group 1"}));
-        when(groupRoleRepository.findRoleNamesByGroupId(anyLong())).thenReturn((List<Object[]>)Arrays.asList(new Object[]{1L, "Admin"}));
+        when(userRoleRepository.findRoleNameByUserId(anyLong())).thenReturn(Collections.singletonList(new Object[]{1L, "Admin"}));
+        when(userGroupRepository.findGroupNameByUserId(anyLong())).thenReturn(Collections.singletonList(new Object[]{1L, "Group 1"}));
+        when(groupRoleRepository.findRoleNamesByGroupId(anyLong())).thenReturn(Collections.singletonList(new Object[]{1L, "Admin"}));
         when(userRepository.save(any(User.class))).thenReturn(user);
 
         ResponseEntity<UserResponseDto> response = userServiceImpl.saveOrUpdateUser(userRequestDto);
@@ -155,9 +155,9 @@ public class UserServiceImplTest {
     @Test
     public void testGetUserById_Success() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
-        when(userRoleRepository.findRoleNameByUserId(anyLong())).thenReturn((List<Object[]>)Arrays.asList(new Object[]{1L, "Admin"}));
-        when(userGroupRepository.findGroupNameByUserId(anyLong())).thenReturn((List<Object[]>)Arrays.asList(new Object[]{1L, "Group 1"}));
-        when(groupRoleRepository.findRoleNamesByGroupId(anyLong())).thenReturn((List<Object[]>)Arrays.asList(new Object[]{1L, "Admin"}));
+        when(userRoleRepository.findRoleNameByUserId(anyLong())).thenReturn(Collections.singletonList(new Object[]{1L, "Admin"}));
+        when(userGroupRepository.findGroupNameByUserId(anyLong())).thenReturn(Collections.singletonList(new Object[]{1L, "Group 1"}));
+        when(groupRoleRepository.findRoleNamesByGroupId(anyLong())).thenReturn(Collections.singletonList(new Object[]{1L, "Admin"}));
 
         ResponseEntity<UserResponseDto> response = userServiceImpl.getUserById(1L);
 
@@ -179,9 +179,9 @@ public class UserServiceImplTest {
     public void testGetUsers_Success() {
         Page<User> page = new PageImpl<>(Collections.singletonList(user));
         when(userRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(page);
-        when(userRoleRepository.findRoleNameByUserId(anyLong())).thenReturn((List<Object[]>)Arrays.asList(new Object[]{1L, "Admin"}));
-        when(userGroupRepository.findGroupNameByUserId(anyLong())).thenReturn((List<Object[]>)Arrays.asList(new Object[]{1L, "Group 1"}));
-        when(groupRoleRepository.findRoleNamesByGroupId(anyLong())).thenReturn((List<Object[]>)Arrays.asList(new Object[]{1L, "Admin"}));
+        when(userRoleRepository.findRoleNameByUserId(anyLong())).thenReturn(Collections.singletonList(new Object[]{1L, "Admin"}));
+        when(userGroupRepository.findGroupNameByUserId(anyLong())).thenReturn(Collections.singletonList(new Object[]{1L, "Group 1"}));
+        when(groupRoleRepository.findRoleNamesByGroupId(anyLong())).thenReturn(Collections.singletonList(new Object[]{1L, "Admin"}));
 
         ResponseEntity<PaginationResponseDto<UserResponseDto>> response = userServiceImpl.getUsers(1L, "Test User", "testuser@example.com", "ACTIVE", Pageable.unpaged());
 
@@ -216,8 +216,8 @@ public class UserServiceImplTest {
     @Test
     public void testGetAllGroups_Success() {
         when(groupRepository.findByStatus(Status.ACTIVE)).thenReturn(Arrays.asList(group1, group2));
-        when(groupRoleRepository.findRoleNamesByGroupId(1L)).thenReturn((List<Object[]>)Arrays.asList(new Object[]{1L, "Admin"}));
-        when(groupRoleRepository.findRoleNamesByGroupId(2L)).thenReturn((List<Object[]>)Arrays.asList(new Object[]{2L, "User"}));
+        when(groupRoleRepository.findRoleNamesByGroupId(1L)).thenReturn(Collections.singletonList(new Object[]{1L, "Admin"}));
+        when(groupRoleRepository.findRoleNamesByGroupId(2L)).thenReturn(Collections.singletonList(new Object[]{2L, "User"}));
 
         ResponseEntity<List<GroupNameDto>> response = userServiceImpl.getAllGroups();
 

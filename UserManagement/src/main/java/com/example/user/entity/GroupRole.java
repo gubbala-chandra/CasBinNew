@@ -21,7 +21,7 @@ public class GroupRole {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = false)
-    private Group group;
+    private Groups group;
 
     @Column(name = "role_id", nullable = false)
     private Long roleId;

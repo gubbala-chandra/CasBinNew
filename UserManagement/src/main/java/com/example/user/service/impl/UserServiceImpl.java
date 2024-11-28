@@ -189,7 +189,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<List<GroupNameDto>> getAllGroups() {
-        List<Group> groups = groupRepository.findByStatus(Status.ACTIVE);
+        List<Groups> groups = groupRepository.findByStatus(Status.ACTIVE);
         List<GroupNameDto> response = groups.stream().map(g -> new GroupNameDto(g.getGroupId(), g.getGroupName(),
                 (groupRoleRepository.findRoleNamesByGroupId(g.getGroupId())
                         .stream().map(obj -> new RoleInfoDto(Long.parseLong(obj[0].toString()), (String)obj[1], true)).collect(Collectors.toList()))
